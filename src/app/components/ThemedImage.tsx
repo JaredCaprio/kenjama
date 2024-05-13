@@ -33,7 +33,15 @@ const ThemedImage = ({ lightImage, darkImage }: Props) => {
 			break;
 	}
 
-	return <Image src={srcImage} alt='themed image' width={250} height={250} />;
+	return (
+		<Image
+			src={srcImage}
+			alt='themed image'
+			width={200}
+			height={200}
+			loading='lazy'
+		/>
+	);
 };
 
 export default ThemedImage;

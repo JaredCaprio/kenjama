@@ -1,20 +1,27 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+import Link from 'next/link';
 
 type Props = {
-	btnContent: string;
 	bgColor?: string;
 	textColor?: string;
-	hover: boolean;
+	willHover: boolean;
+	href?: string;
+	children: ReactNode;
 };
 
 const Button = (props: Props) => {
-	return (
-		<button
-			className={`${props.bgColor} ${props.textColor} px-2 py-1 rounded-md ${
-				props.hover === true ? 'hover:bg-tertiary/100' : ''
-			} transition-all duration-500`}
-		>
-			{props.btnContent}
+	let className = `${props.bgColor} ${
+		props.textColor
+	} px-2 py-1 rounded-md transition-all duration-500
+		${props.willHover ? 'hover:bg-tertiary/100' : ''}`;
+
+	return props.href ? (
+		<Link className={className} href={props.href}>
+			{props.children}
+		</Link>
+	) : (
+		<button type='button' className={className}>
+			{props.children}
 		</button>
 	);
 };
