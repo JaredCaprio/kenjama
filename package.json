@@ -12,6 +12,7 @@
     "next": "14.2.3",
     "next-themes": "^0.3.0",
     "react": "^18",
+    "react-cool-dimensions": "^3.0.1",
     "react-dom": "^18",
     "react-icons": "^5.2.0",
     "sharp": "^0.33.3"
