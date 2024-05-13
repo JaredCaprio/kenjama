@@ -6,7 +6,6 @@ import { ThemeProvider } from 'next-themes';
 export const metadata: Metadata = {
 	title: 'Kenjama | Jam with Friends',
 	description: 'You kendama Jam Hub',
-	
 };
 
 export default function RootLayout({
@@ -16,7 +15,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html suppressHydrationWarning lang='en'>
-			<body className='container m-auto'>
+			<body className='container m-auto overflow-x-hidden'>
 				<ThemeProvider attribute='class' defaultTheme='system'>
 					<Navbar />
 					{children}
