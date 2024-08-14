@@ -2,25 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-	:root {
-		--primary: 180, 45, 45;
-		--secondary: 157, 75, 0, 255;
-		--tertiary: 129, 32, 32;
-	}
-	.dark {
-		--background: 0, 0, 0;
-		--content: 255, 255, 255;
-	}
-
-	.light {
-		--background: 255, 255, 255;
-		--content: 0, 0, 0;
-	}
+:root {
+    --primary: 180, 45, 45;
+    --secondary: 157, 75, 0, 255;
+    --tertiary: 129, 32, 32;
+    --background: 13, 13, 13;
+    --accent: 23, 23, 23;
+    --content: 255, 255, 255;
 }
 
 @layer utilities {
-	.text-balance {
-		text-wrap: balance;
-	}
+    .text-balance {
+        text-wrap: balance;
+    }
 }
