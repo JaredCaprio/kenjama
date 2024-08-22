@@ -7,8 +7,8 @@ import {
     collection,
     getDocs,
     addDoc,
-} from '../../../../libs/firebase/firebase-config';
-import { signInWithGoogle } from '../../../../libs/firebase/auth';
+} from '../../../config/firebase-config';
+import { signInWithGoogle } from '../../../firebase/auth';
 import { FcGoogle } from 'react-icons/fc';
 import { UserCredential, sendEmailVerification } from 'firebase/auth';
 import { useRouter } from 'next/navigation';

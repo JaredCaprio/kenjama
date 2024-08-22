@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { FaClock } from 'react-icons/fa';
 import { IoMdPin } from 'react-icons/io';
+import Link from 'next/link';
 
 type Props = {};
 
@@ -37,19 +38,21 @@ export default function Jam({}: Props) {
         <main className="p-5 sm:p-10">
             <section className="flex flex-col gap-10" aria-label="jam header">
                 <h1 className="text-3xl">Games of Ken in Crescent Lake Park</h1>
-                <div className="mb-10 flex items-center gap-4">
-                    <Image
-                        src="/ezra.jpg"
-                        alt="alternative text"
-                        style={{ borderRadius: '50px' }}
-                        height={50}
-                        width={50}
-                    />
-                    <div>
-                        <p>Hosted by</p>{' '}
-                        <p className="font-semibold">Jared C.</p>
+                <Link href="/profile/345">
+                    <div className="mb-10 flex items-center gap-4">
+                        <Image
+                            src="/ezra.jpg"
+                            alt="alternative text"
+                            style={{ borderRadius: '50px' }}
+                            height={50}
+                            width={50}
+                        />
+                        <div>
+                            <p>Hosted by</p>{' '}
+                            <p className="font-semibold">Jared C.</p>
+                        </div>
                     </div>
-                </div>
+                </Link>
             </section>
             <section
                 aria-label="jam info"

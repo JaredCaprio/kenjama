@@ -1,6 +1,6 @@
 'use client';
 import { FormEvent, useState } from 'react';
-import { firebaseAuth } from '../../../../libs/firebase/firebase-config';
+import { firebaseAuth } from '../../../config/firebase-config';
 import { useRouter } from 'next/navigation';
 import { FcGoogle } from 'react-icons/fc';
 import { z } from 'zod';
@@ -11,6 +11,7 @@ import {
     GoogleAuthProvider,
     signInWithEmailAndPassword,
     signInWithPopup,
+    UserCredential,
 } from 'firebase/auth';
 
 const schema = z.object({
@@ -46,7 +47,18 @@ const SignInPage = () => {
     const handleGoogleLogIn = async () => {
         try {
             const googleProvider = new GoogleAuthProvider();
-            const result = await signInWithPopup(firebaseAuth, googleProvider);
+            const result: UserCredential = await signInWithPopup(
+                firebaseAuth,
+                googleProvider
+            );
+            const user = result.user;
+            const idToken = await user.getIdToken();
+            console.log(idToken);
+            await fetch(`/api/login`, {
+                headers: {
+                    Authorization: `Bearer ${idToken}`,
+                },
+            });
             router.push('/dashboard');
             console.log(result);
         } catch (error) {
