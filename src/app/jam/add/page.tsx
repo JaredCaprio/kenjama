@@ -4,18 +4,22 @@ import { db } from '@/config/firebase-config';
 import { addDoc } from 'firebase/firestore';
 import { collection } from 'firebase/firestore';
 import { useAuth } from '@/contexts/authContext';
+import { useRouter } from 'next/navigation';
+import { JamDataType } from '@/types/Jams';
 
 type Props = {};
 
 export default function AddJam({}: Props) {
     const { user, loading } = useAuth();
-    const [formData, setFormData] = useState({
+    const router = useRouter();
+    const [formData, setFormData] = useState<JamDataType>({
         title: '',
-        dateTime: '',
+        dateTime: 0,
         duration: '',
-        photo: null as File | null,
+        photo: null,
         description: '',
         location: '',
+        address: '',
         howToFindUs: '',
     });
 
@@ -30,7 +34,6 @@ export default function AddJam({}: Props) {
             [id]: value,
         }));
     };
-
     const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setFormData((prevData) => ({
@@ -49,16 +52,15 @@ export default function AddJam({}: Props) {
             hostName: user?.displayName,
             hostEmail: user?.email,
         });
-
-        console.log(jamDocRef.id);
-
+        router.push('/dashboard');
         setFormData({
             title: '',
-            dateTime: '',
+            dateTime: 0,
             duration: '',
             photo: null as File | null,
             description: '',
             location: '',
+            address: '',
             howToFindUs: '',
         });
     };
@@ -119,10 +121,10 @@ export default function AddJam({}: Props) {
                         required
                     >
                         <option value="">Select Duration</option>
-                        <option value="30 min">30 min</option>
-                        <option value="1 hour">1 hour</option>
-                        <option value="2 hours">2 hours</option>
-                        <option value="3 hours">3 hours</option>
+                        <option value="30">30 min</option>
+                        <option value="60">1 hour</option>
+                        <option value="120">2 hours</option>
+                        <option value="180">3 hours</option>
                     </select>
                 </div>
 
@@ -169,6 +171,22 @@ export default function AddJam({}: Props) {
                         id="location"
                         type="text"
                         value={formData.location}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full rounded-md border-gray-700 bg-gray-900 p-4 text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        required
+                    />
+                </div>
+                <div>
+                    <label
+                        htmlFor="address"
+                        className="block text-sm font-medium text-gray-300"
+                    >
+                        Address
+                    </label>
+                    <input
+                        id="address"
+                        type="text"
+                        value={formData.address}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md border-gray-700 bg-gray-900 p-4 text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         required
