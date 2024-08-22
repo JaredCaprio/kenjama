@@ -14,6 +14,7 @@ export type UserState = {
     displayName: string | null | undefined;
     email: string | null | undefined;
     photoURL: string | null | undefined;
+    uid: string;
 };
 
 interface AuthContextType {
