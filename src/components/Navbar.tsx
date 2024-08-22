@@ -109,7 +109,9 @@ export default function Navbar() {
                             >
                                 <span className="inline-flex items-center">
                                     <FaUser className="mr-2" />
-                                    {user.displayName}
+                                    <Link href={`/profile/${user?.uid}`}>
+                                        {user.displayName}
+                                    </Link>
                                 </span>
                                 <div className="inline-flex items-center">
                                     <MdEmail className="mr-2 opacity-100" />
@@ -176,8 +178,11 @@ export default function Navbar() {
                                     className="rounded-full"
                                 />
                             </li>
+
                             <li className="text-white">
-                                {user.displayName}
+                                <Link href={`/profile/${user?.uid}`}>
+                                    {user.displayName}
+                                </Link>
                                 <br />
                                 <span className="opacity-50">{user.email}</span>
                             </li>
