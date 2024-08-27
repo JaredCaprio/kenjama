@@ -16,12 +16,12 @@ export default function RootLayout({
 }>) {
     return (
         <html suppressHydrationWarning lang="en" className="dark">
-            <AuthContextProvider>
-                <body className="container m-auto h-screen bg-black/95 text-white">
+            <body className="container m-auto h-screen bg-black/95 text-white">
+                <AuthContextProvider>
                     <Navbar />
                     {children}
-                </body>
-            </AuthContextProvider>
+                </AuthContextProvider>
+            </body>
         </html>
     );
 }
