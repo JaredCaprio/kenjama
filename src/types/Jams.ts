@@ -1,14 +1,22 @@
+import { DocumentData, DocumentReference } from 'firebase/firestore';
+import { FirebaseUserData } from './User';
+
 //Types for Jam data
-export type JamDataType = {
-    id?: string;
+export type Jam = {
+    uid: string;
     title: string;
-    dateTime: number;
-    duration: string;
-    hostName?: string;
-    hostEmail?: string;
     description: string;
-    howToFindUs: string;
-    photo: File | null;
+    attendees: { userId: string }[];
+    dateTime: string;
     location: string;
     address: string;
+    duration: string;
+    howToFindUs: string;
+    photoURL: string;
+    hostUser: {
+        displayName: string;
+        email: string;
+        photoURL: string;
+        uid: string;
+    };
 };
