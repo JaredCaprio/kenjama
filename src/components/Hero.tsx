@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import Button from './Button';
+import Button from './Buttons/Button';
+import Link from 'next/link';
 
 function Hero() {
     return (
@@ -31,13 +32,9 @@ function Hero() {
                     Bringing Kendama Enthusiasts Together for Endless Jam
                     Sessions
                 </p>
-                <Button
-                    href="/sign-up"
-                    willHover={true}
-                    bgColor="bg-primary/100 text-white"
-                >
-                    Join Kenjama
-                </Button>
+                <Link href="/sign-up">
+                    <Button willHover={true}>Join Kenjama</Button>
+                </Link>
             </div>
         </div>
     );
