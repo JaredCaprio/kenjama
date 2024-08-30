@@ -1,19 +1,14 @@
 'use client';
 import { FormEvent, useState } from 'react';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import {
-    firebaseAuth,
-    db,
-    collection,
-    getDocs,
-    addDoc,
-} from '../../../config/firebase-config';
-import { signInWithGoogle } from '../../../firebase/auth';
 import { FcGoogle } from 'react-icons/fc';
-import { UserCredential, sendEmailVerification } from 'firebase/auth';
+import { sendEmailVerification } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { db, firebaseAuth } from '@/config/firebase-config';
+import { addDoc, collection } from 'firebase/firestore';
+import { signInWithGoogle } from '@/firebase/auth';
 
 const SignUpPage = () => {
     // State for email, password, first Name, and Last Name inputs
@@ -51,7 +46,7 @@ const SignUpPage = () => {
             } else {
                 console.error('Current user is null');
             }
-            console.log({ res });
+
             setFormData({
                 email: '',
                 password: '',
