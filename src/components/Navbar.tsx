@@ -1,12 +1,6 @@
 'use client';
-import React, {
-    MutableRefObject,
-    ReactNode,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
-import Button from './Button';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
+import Button from './Buttons/Button';
 
 import { IoMdClose } from 'react-icons/io';
 import { RxHamburgerMenu } from 'react-icons/rx';
@@ -18,6 +12,8 @@ import { signOut } from 'firebase/auth';
 import { firebaseAuth } from '../config/firebase-config';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function Navbar() {
     const router = useRouter();
@@ -70,6 +66,7 @@ export default function Navbar() {
                         alt="logo"
                         width={200}
                         height={150}
+                        style={{ minWidth: '150px' }}
                     />
                 </Link>
                 <RxHamburgerMenu
@@ -87,7 +84,7 @@ export default function Navbar() {
                     size={30}
                 />
                 <ul className="relative hidden items-center justify-between text-center sm:flex">
-                    {user ? (
+                    {!loading && user ? (
                         <>
                             <li onClick={handleProfilePopup} className="p-5">
                                 <Image
@@ -122,33 +119,38 @@ export default function Navbar() {
                                 <li className="py-3">
                                     <p onClick={() => handleSignOut()}>
                                         {' '}
-                                        <Button
-                                            bgColor="bg-primary"
-                                            textColor="text-white"
-                                            willHover={true}
-                                        >
+                                        <Button willHover={true}>
                                             Sign Out
                                         </Button>{' '}
                                     </p>
                                 </li>
                             </div>
                         </>
+                    ) : loading ? (
+                        <Skeleton
+                            baseColor="#151515"
+                            highlightColor="#1a1a1a"
+                            count={1}
+                            style={{ borderRadius: '9999px', padding: '20px' }}
+                            height={50}
+                            width={50}
+                        />
                     ) : (
                         <>
                             <li className="p-5">
-                                <Button href="/sign-in" willHover={false}>
-                                    Log in
-                                </Button>
+                                <Link href="/sign-in">
+                                    <Button
+                                        willHover={true}
+                                        buttonType="secondary"
+                                    >
+                                        Log in
+                                    </Button>
+                                </Link>
                             </li>
                             <li className="p-5">
-                                <Button
-                                    willHover={true}
-                                    textColor="text-white"
-                                    bgColor="bg-primary/100"
-                                    href="/sign-up"
-                                >
-                                    Sign Up
-                                </Button>
+                                <Link href="/sign-up">
+                                    <Button willHover={true}>Sign Up</Button>
+                                </Link>
                             </li>
                         </>
                     )}
@@ -158,12 +160,12 @@ export default function Navbar() {
                 ref={mobileDropDownRef}
                 className={
                     mobileMenuOpen
-                        ? 'fixed right-0 top-0 z-10 h-screen w-[60%] bg-black/95 p-10 text-center  duration-200 ease-in sm:hidden'
-                        : 'fixed left-[-100%] text-center'
+                        ? 'fixed right-0 top-0 z-10 h-screen w-[60%] min-w-48 bg-black/95 p-10 text-center duration-200 ease-in sm:hidden'
+                        : 'fixed left-[-99999999px] text-center'
                 }
             >
                 <ul className="flex flex-col items-center justify-between space-y-10">
-                    {user ? (
+                    {!loading && user ? (
                         <>
                             <li>
                                 <Image
@@ -190,30 +192,32 @@ export default function Navbar() {
                             <li>
                                 <p onClick={() => handleSignOut()}>
                                     {' '}
-                                    <Button
-                                        bgColor="bg-primary/100 text-white"
-                                        willHover={true}
-                                    >
+                                    <Button willHover={true}>
                                         Sign Out
                                     </Button>{' '}
                                 </p>
                             </li>
                         </>
+                    ) : loading ? (
+                        <Skeleton
+                            baseColor="#151515"
+                            highlightColor="#1a1a1a"
+                            count={1}
+                            style={{ borderRadius: '9999px', padding: '20px' }}
+                            height={50}
+                            width={50}
+                        />
                     ) : (
                         <>
                             <li>
-                                <Button href="/sign-in" willHover={false}>
-                                    Log in
-                                </Button>
+                                <Link href="/sign-in">
+                                    <Button willHover={false}>Log in</Button>
+                                </Link>
                             </li>
                             <li>
-                                <Button
-                                    href="/sign-up"
-                                    willHover={false}
-                                    textColor="text-content"
-                                >
-                                    Sign Up
-                                </Button>
+                                <Link href="/sign-up">
+                                    <Button willHover={false}>Sign Up</Button>
+                                </Link>
                             </li>
                         </>
                     )}
