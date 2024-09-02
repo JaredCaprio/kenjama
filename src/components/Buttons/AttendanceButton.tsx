@@ -1,15 +1,5 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import {
-    arrayRemove,
-    arrayUnion,
-    doc,
-    getDoc,
-    setDoc,
-    updateDoc,
-} from 'firebase/firestore';
-import { db } from '../../config/firebase-config';
-
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
 
@@ -19,7 +9,6 @@ type AttendanceButtonProps = {
     eventId: string;
     userId: string | undefined;
 };
-
 const AttendanceButton = ({ eventId, userId }: AttendanceButtonProps) => {
     const [isAttending, setIsAttending] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -30,45 +19,36 @@ const AttendanceButton = ({ eventId, userId }: AttendanceButtonProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventId, userId]);
 
-    const fetchAttendanceStatus = async () => {
-        setIsLoading(true);
-        try {
-            const jamRef = doc(db, 'jams', eventId);
-            const jamDoc = await getDoc(jamRef);
-            if (jamDoc.exists()) {
-                setIsAttending(
-                    jamDoc
-                        .data()
-                        .attendees.map(
-                            (user: { userId: string }) => user.userId
-                        )
-                        .includes(userId)
-                );
-            } else {
-                setIsAttending(false);
-            }
-        } catch (error) {
-            console.error('Error fetching attendance status:', error);
-        }
+    async function fetchAttendanceStatus() {
+        const attendanceRes = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/jam/${eventId}`
+        );
+        const attendanceData = await attendanceRes.json();
+
+        const isUserAttending = attendanceData.attendees.filter(
+            (attendee: { userId: string | undefined }) =>
+                attendee.userId == userId
+        );
+        setIsAttending(!!isUserAttending.length);
         setIsLoading(false);
-    };
+    }
 
     const toggleAttendance = async () => {
         setIsLoading(true);
-        try {
-            const jamRef = doc(db, 'jams', eventId);
-            const newAttendingStatus = !isAttending;
-            setIsAttending(newAttendingStatus);
+        const patchReqBody = {
+            attending: isAttending ? false : true,
+            userId,
+        };
 
-            const updateRes = await updateDoc(jamRef, {
-                attendees: newAttendingStatus
-                    ? arrayUnion({ userId })
-                    : arrayRemove({ userId }),
-            });
-        } catch (error) {
-            console.error('Error updating attendance status:', error);
-        }
+        const attendanceRes = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/jam/${eventId}`,
+            {
+                method: 'PATCH',
+                body: JSON.stringify(patchReqBody),
+            }
+        );
         setIsLoading(false);
+        setIsAttending(!isAttending);
     };
 
     if (isLoading) {
