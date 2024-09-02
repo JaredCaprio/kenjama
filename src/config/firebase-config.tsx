@@ -1,6 +1,7 @@
 import { getAuth, sendEmailVerification } from 'firebase/auth';
 import { collection, getFirestore } from 'firebase/firestore';
 import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -19,6 +20,15 @@ const firebaseAuth = getAuth(firebaseApp);
 
 const db = getFirestore();
 
+const storage = getStorage();
+
 const jamsCollection = collection(db, 'jams');
 
-export { firebaseApp, firebaseAuth, db, jamsCollection, sendEmailVerification };
+export {
+    firebaseApp,
+    firebaseAuth,
+    storage,
+    db,
+    jamsCollection,
+    sendEmailVerification,
+};
