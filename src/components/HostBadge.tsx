@@ -1,20 +1,23 @@
-'use client';
 import Link from 'next/link';
 import AttendanceButton from './Buttons/AttendanceButton';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
 
 type HostBadgeProps = {
     photoURL: string;
     displayName: string;
     userId: string | undefined;
+    jamId: string;
 };
 
-const HostBadge = ({ photoURL, displayName, userId }: HostBadgeProps) => {
-    const { Id } = useParams<{ Id: string }>();
+const HostBadge = ({
+    photoURL,
+    displayName,
+    userId,
+    jamId,
+}: HostBadgeProps) => {
     return (
         <div className="mb-10 flex  items-center justify-between  ">
-            <Link className="flex gap-5" href="/profile/345">
+            <Link className="flex gap-5" href={`/profile/${userId}`}>
                 <Image
                     src={photoURL}
                     alt="alternative text"
@@ -27,7 +30,7 @@ const HostBadge = ({ photoURL, displayName, userId }: HostBadgeProps) => {
                     <p className="font-semibold">{displayName}</p>
                 </div>
             </Link>
-            <AttendanceButton eventId={Id} userId={userId} />
+            <AttendanceButton eventId={jamId} userId={userId} />
         </div>
     );
 };
