@@ -8,7 +8,6 @@ type AttendeesListProps = {
 };
 
 const AttendeesList = async ({ Id, jamData }: AttendeesListProps) => {
-    //Fetch Attendees list from api
     const attendeesRes = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/jam/${Id}/attendees`
     );
