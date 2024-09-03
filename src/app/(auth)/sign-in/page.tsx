@@ -1,19 +1,13 @@
 'use client';
-import { FormEvent, useState } from 'react';
-import { db, firebaseAuth } from '../../../config/firebase-config';
+import { firebaseAuth } from '../../../config/firebase-config';
 import { useRouter } from 'next/navigation';
 import { FcGoogle } from 'react-icons/fc';
 import { z } from 'zod';
 import Link from 'next/link';
 import Image from 'next/image';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-    GoogleAuthProvider,
-    signInWithEmailAndPassword,
-    signInWithPopup,
-    UserCredential,
-} from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useAuth } from '@/contexts/authContext';
 
 const schema = z.object({
     email: z.string().email().min(3).max(128),
@@ -39,46 +33,13 @@ const SignInPage = () => {
                 data.password
             );
 
-            router.push('/');
-        } catch (error) {
-            setError('email', { message: 'Email not found' });
-        }
-    };
-
-    const handleGoogleLogIn = async () => {
-        try {
-            const googleProvider = new GoogleAuthProvider();
-            const result: UserCredential = await signInWithPopup(
-                firebaseAuth,
-                googleProvider
-            );
-            const user = result.user;
-
-            const userDocRef = doc(db, 'users', result.user.uid);
-
-            const userSnap = await getDoc(userDocRef);
-
-            if (!userSnap.exists()) {
-                await setDoc(userDocRef, {
-                    displayName: user.displayName,
-                    email: user.email,
-                    uid: user.uid,
-                    photoURL: user.photoURL,
-                });
-            }
-
-            const idToken = await user.getIdToken();
-
-            await fetch(`/api/login`, {
-                headers: {
-                    Authorization: `Bearer ${idToken}`,
-                },
-            });
             router.push('/dashboard');
         } catch (error) {
-            throw error;
+            setError('root', { message: 'Account not found' });
         }
     };
+
+    const { signInWithGoogle } = useAuth();
 
     return (
         <div className="flex min-h-screen flex-col items-center justify-center text-content/100">
@@ -88,7 +49,7 @@ const SignInPage = () => {
                     onSubmit={handleSubmit(onSubmit)}
                     className="w-full max-w-sm"
                 >
-                    <div className="mb-6">
+                    <div className="mb-6 ">
                         <label htmlFor="email" className="mb-2 block">
                             Email
                         </label>
@@ -119,10 +80,15 @@ const SignInPage = () => {
                     >
                         {isSubmitting ? 'Loading...' : 'Sign In'}
                     </button>
+                    {errors.root && (
+                        <div className="mt-8 text-center text-red-500">
+                            {errors.root.message}
+                        </div>
+                    )}
                 </form>
-                <hr className="mt-11 w-full text-gray-700/50" />
+                <hr className="mt-8 w-full text-gray-700/50" />
                 <button
-                    onClick={() => handleGoogleLogIn()}
+                    onClick={() => signInWithGoogle(router)}
                     className="mt-10 flex w-full items-center justify-center rounded-lg bg-primary/100 px-4 py-2 font-bold text-white hover:bg-tertiary/100 focus:outline-none focus:ring focus:ring-red-400"
                 >
                     <FcGoogle className="mr-2" /> Log in with Google
