@@ -1,21 +1,26 @@
 'use client';
-import React, { MutableRefObject, useRef, useState } from 'react';
+import React, {
+    ChangeEvent,
+    MutableRefObject,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { storage } from '@/config/firebase-config';
 import { useAuth } from '@/contexts/authContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { JamFormData } from '@/types/JamFormData';
 import { ErrorState } from '@/types/JamFormData';
 import JamForm from '@/components/JamForm';
 
-export default function AddJamPage() {
+export default function EditJamPage() {
     const { user, loading } = useAuth();
     const router = useRouter();
     const [error, setError] = useState<ErrorState>();
     const fileInputRef: MutableRefObject<HTMLInputElement | null> =
         useRef(null);
-
     const [formData, setFormData] = useState<JamFormData>({
         title: '',
         dateTime: '',
@@ -28,21 +33,31 @@ export default function AddJamPage() {
         id: '',
     });
 
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        //If searchParams exist, use them to fill in the FormData
+        if (searchParams.size > 0) {
+            const jamDataParams = Object.fromEntries(
+                searchParams.entries()
+            ) as JamFormData;
+            setFormData(jamDataParams);
+        }
+    }, [searchParams]);
+
     const handleInputChange = (
         e: React.ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
         >
     ) => {
         const { id, value } = e.target;
-        setFormData((prevData: any) => ({
+        setFormData((prevData: JamFormData) => ({
             ...prevData,
             [id]: value,
         }));
     };
 
-    const handlePhotoChange = async (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handlePhotoChange = async (e: ChangeEvent<HTMLInputElement>) => {
         setError({ errorMessage: '', errorID: '' });
         //check if file is contained in target
         if (e.target.files && e.target.files.length > 0) {
@@ -90,23 +105,18 @@ export default function AddJamPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        let updatedId = formData.id;
-
-        if (!formData.id) {
-            updatedId = uuidv4();
-            setFormData((prev) => ({ ...prev, updatedId }));
-        }
-        //make post request to api sending jam data as payload
+        //Make a patch request to api with updated jam data
         if (!loading) {
-            await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/jam/`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    ...formData,
-                    id: updatedId,
-                    hostUser: user?.uid,
-                }),
-            });
+            await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/jam/${formData?.id}`,
+                {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        ...formData,
+                        hostUser: user?.uid,
+                    }),
+                }
+            );
         }
 
         router.push('/dashboard');
