@@ -1,22 +1,34 @@
 import React from 'react';
 import Image from 'next/image';
-import Button from '@/components/Button';
-import {
-    FaUser,
-    FaMapMarkerAlt,
-    FaCalendarAlt,
-    FaClock,
-    FaUsers,
-} from 'react-icons/fa';
+import { FaUser, FaMapMarkerAlt, FaCalendarAlt, FaClock } from 'react-icons/fa';
+import { FirebaseUserData } from '@/types/FirebaseUser';
 
-type Props = {};
+export default async function Profile({
+    params,
+}: {
+    params: { userId: string };
+}) {
+    const { userId } = params;
 
-export default function Profile({}: Props) {
+    const userRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${userId}`
+    );
+    const userData: FirebaseUserData = await userRes.json();
+
+    const userFirstName = userData?.displayName.split(' ')[0];
+
+    //Determine the number of RSVPs a user has using the jams subcollection
+    const userJamsRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${userId}/jams`
+    );
+    const userJamsData = await userJamsRes.json();
+    const rsvps = userJamsData.length;
+
     return (
         <main className="flex flex-col gap-6 md:flex-row">
             <section
                 aria-label="Profile-info"
-                className="border-borderDefault border-2 bg-accent p-5"
+                className="border-2 border-borderDefault bg-accent p-5"
             >
                 <div className="relative">
                     <div className="absolute h-full w-full bg-gradient-to-t from-black/75 to-black/0"></div>
@@ -24,14 +36,14 @@ export default function Profile({}: Props) {
                         width={500}
                         height={100}
                         className="rounded-lg border-2 border-accent"
-                        src="/ezra.jpg"
+                        src={userData?.photoURL}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         alt="Profile Picture"
                     />
                     <div className="absolute bottom-2 left-5">
                         <div className="flex items-center">
                             <FaUser className="mr-1" />
-                            <p>Jared</p>
+                            <p>{userFirstName}</p>
                         </div>
                         <div className="flex items-center">
                             <FaMapMarkerAlt className="mr-1" />
@@ -49,15 +61,11 @@ export default function Profile({}: Props) {
                         <p className=" font-semibold"> Friends</p>
                     </div>
                     <div className="text-center">
-                        <p>34</p>
+                        <p>{rsvps}</p>
                         <p className=" font-semibold">RSVPs</p>
                     </div>
                 </div>
-                <div className="mb-10 flex items-center justify-center">
-                    <Button willHover={true} bgColor="bg-primary ">
-                        Chat with Jared
-                    </Button>
-                </div>
+
                 <div className="flex flex-col items-center justify-center">
                     <p>Team</p>
                     <div>
@@ -71,12 +79,9 @@ export default function Profile({}: Props) {
                     <span>Sweets</span>
                 </div>
             </section>
-            <section
-                className="border-borderDefault grow border-2 bg-accent p-4"
-                aria-label="recent-activity"
-            >
+            <section className="grow  p-4" aria-label="recent-activity">
                 <h2 className="mb-4 text-3xl">Recent Activity</h2>
-                <article className="border-borderDefault bg-accentSecondary mb-4 border-2 p-4">
+                <article className="mb-4 border-2 border-borderDefault p-4  duration-500 hover:bg-accentSecondary">
                     <p>
                         Jared <span className="opacity-50">added an event</span>
                     </p>
@@ -102,13 +107,7 @@ export default function Profile({}: Props) {
                         />
                     </div>
                 </article>
-                <article className="mb-4 ">
-                    <div className="flex items-center">
-                        <p>Jared and Johnny Kress became Friends</p>
-                        <FaUsers className="ml-2 opacity-50" />
-                    </div>
-                </article>
-                <article className="border-borderDefault bg-accentSecondary mb-4 border-2 p-4 ">
+                <article className="mb-4 border-2 border-borderDefault p-4 duration-500   hover:bg-accentSecondary ">
                     <p>
                         Jared <span className="opacity-50">added an event</span>
                     </p>
