@@ -1,6 +1,6 @@
 //Types for Jam data
 export type Jam = {
-    uid: string;
+    id: string;
     title: string;
     description: string;
     attendees: { userId: string }[];
