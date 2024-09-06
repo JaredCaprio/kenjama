@@ -3,13 +3,10 @@
 import { db } from '@/config/firebase-config';
 import { FirebaseUserData } from '@/types/FirebaseUser';
 import { Jam } from '@/types/Jam';
-import { DocumentData } from 'firebase-admin/firestore';
 import {
     collection,
-    doc,
     DocumentSnapshot,
     getDoc,
-    getDocs,
     onSnapshot,
 } from 'firebase/firestore';
 import Image from 'next/image';
