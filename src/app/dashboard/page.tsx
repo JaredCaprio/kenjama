@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Jam } from '@/types/Jams';
+import { Jam } from '@/types/Jam';
 import { FaLocationDot } from 'react-icons/fa6';
 import { FaClock, FaRegCalendarPlus } from 'react-icons/fa';
 import IconButton from '@/components/Buttons/IconButton';
@@ -30,22 +30,22 @@ export default async function Dashboard() {
                 <div aria-label="events list" className="">
                     <ul className="my-10 flex flex-col gap-10 ">
                         {jamsData &&
-                            jamsData
+                            jamsData //TODO - sort Jams in api before fetching
                                 .sort((a, b) =>
                                     a.dateTime.localeCompare(b.dateTime)
-                                )
-                                .map((event, i) => (
-                                    <Link key={i} href={`/jam/${event.uid}`}>
+                                ) // TODO - Find more efficient way to filter past events
+                                .map((jam, i) => (
+                                    <Link key={i} href={`/jam/${jam.id}`}>
                                         {' '}
                                         <div className="flex cursor-pointer flex-col items-center gap-10 rounded-lg border-2 border-borderDefault p-5 duration-500 hover:bg-accentSecondary sm:flex-row sm:justify-between ">
                                             <div className="flex flex-col gap-2">
                                                 <h2 className="text-lg font-semibold">
-                                                    {event.title}
+                                                    {jam.title}
                                                 </h2>
                                                 <p>
                                                     <FaClock className="mr-2 inline" />
                                                     {new Date(
-                                                        event.dateTime
+                                                        jam.dateTime
                                                     ).toLocaleDateString(
                                                         'en-US',
                                                         {
@@ -55,18 +55,17 @@ export default async function Dashboard() {
                                                             hour: '2-digit',
                                                             minute: '2-digit',
                                                         }
-                                                    )}{' '}
-                                                    {/* {event.date} */}
+                                                    )}
                                                 </p>
                                                 <p className="flex items-center">
                                                     <FaLocationDot className="mr-2 inline" />
-                                                    {event.location}
+                                                    {jam.location}
                                                     <br />
-                                                    {event.address}
+                                                    {jam.address}
                                                 </p>
                                             </div>
                                             <Image
-                                                src={event?.photoURL}
+                                                src={jam?.photoURL}
                                                 width={150}
                                                 height={150}
                                                 style={{
