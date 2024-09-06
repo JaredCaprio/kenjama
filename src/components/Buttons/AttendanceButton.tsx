@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
-
+import { FirebaseUserData } from '@/types/FirebaseUser';
 import IconButton from './IconButton';
 
 type AttendanceButtonProps = {
@@ -21,15 +21,18 @@ const AttendanceButton = ({ eventId, userId }: AttendanceButtonProps) => {
 
     async function fetchAttendanceStatus() {
         const attendanceRes = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/jam/${eventId}`
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/jam/${eventId}/attendees`
         );
         const attendanceData = await attendanceRes.json();
 
-        const isUserAttending = attendanceData.attendees.filter(
-            (attendee: { userId: string | undefined }) =>
-                attendee.userId == userId
-        );
-        setIsAttending(!!isUserAttending.length);
+        if (Array.isArray(attendanceData)) {
+            const isUserAttending = attendanceData.filter(
+                (attendant: FirebaseUserData) => {
+                    return attendant.uid == userId;
+                }
+            );
+            setIsAttending(!!isUserAttending.length);
+        }
         setIsLoading(false);
     }
 
@@ -41,7 +44,7 @@ const AttendanceButton = ({ eventId, userId }: AttendanceButtonProps) => {
         };
 
         const attendanceRes = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/jam/${eventId}`,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/jam/${eventId}/attendees`,
             {
                 method: 'PATCH',
                 body: JSON.stringify(patchReqBody),
