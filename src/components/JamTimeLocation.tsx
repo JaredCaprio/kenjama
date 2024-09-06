@@ -13,6 +13,14 @@ const JamTimeLocation = ({ jamData }: JamTimeLocationProps) => {
         new Date(date.getTime() + parseInt(minutesString) * 60000);
 
     const jamEndTime = addMinutesToDate(jamDate, jamData?.duration!);
+    const jamTimesForCalendarLink =
+        `${new Date(jamDate)
+            .toISOString()
+            .replace(/[-:]/g, '')
+            .slice(0, 15)}Z/${new Date(jamEndTime)
+            .toISOString()
+            .replace(/[-:]/g, '')
+            .slice(0, 15)}Z` || '';
 
     return (
         <section className="col-span-3 items-center lg:col-span-1">
@@ -43,7 +51,12 @@ const JamTimeLocation = ({ jamData }: JamTimeLocationProps) => {
                                     }
                                 )}
                             </p>
-                            <a href="">Add to calendar</a>
+                            <a
+                                target="_blank"
+                                href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${jamData?.title}&details=${jamData?.description}&dates=${jamTimesForCalendarLink}&location=${jamData?.address}`}
+                            >
+                                Add to Google Calendar
+                            </a>
                         </div>
                     </div>
                     <div className="flex items-center gap-10">
